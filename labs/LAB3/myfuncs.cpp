@@ -1,5 +1,5 @@
 #include "myfuncs.h"
-#include "constans.h"
+#include "constants.h"
 #include "MExc.h"
 #include "MIO.h"
 #include <string>
