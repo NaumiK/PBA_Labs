@@ -1,5 +1,7 @@
 #include "myfuncs.h"
 
+int t();
+
 int main() {
     MDialog dialog{};
     bool DS = true;

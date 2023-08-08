@@ -2,17 +2,117 @@
 #include "constants.h"
 #include "MExc.h"
 #include "MIO.h"
+#include <stdint.h>
 #include <string>
+#include <vcruntime.h>
 #include "dialog.h"
+#include "Matrix.h"
 
+#if defined USE_VECTOR
+namespace {
+}
+void MDialog::ioXY(Dialog::Ioeqpp &iqp) {
+    
+}
 
+#elif defined USE_ONLY_MATRIX
+namespace {
+    Matrix iXY(Dialog::Ioeqpp &iqp) {
+        try {
+            if (iqp.printQst) iqp.qout << "n" << std::endl;
+            size_t n;
+            if (MIO::inputULL(n, iqp.in, iqp.eout, iqp.printErr) != 0) throw MExc::ThereIsNothing();
+            Matrix mrx{n, n};
+            if (iqp.printQst) iqp.qout << "Matrix nxn" << std::endl;
+            for (size_t i = 0; i < n; ++i) {
+                for (size_t j = 0; j < n; ++j) {
+                    if (MIO::inputStreamLL(mrx[i][j], iqp.in, iqp.eout, iqp.printErr) != 0)
+                        throw MExc::ThereIsNothing();
+                }
+            }
+            return mrx;
+        } catch (std::exception &err) {
+            iqp.eout << err.what() << std::endl;
+        }
+        return {0, 0};
+    }
+
+    void oXY(const Matrix &mrx, const std::string &exc, std::ostream &out) {
+        out << exc << ") ";
+        for (size_t i = 1, endi = mrx.cols(); i <= endi; ++i) {
+            bool f = false;
+            for (size_t j = 0, endj = mrx.cols(); j < endj; ++j) {
+                if (mrx[0][j] == i) {
+                    out << j + 1 << " ";
+                    f = true;
+                }
+            }
+            if (f) out << "\t";
+        }
+        out << std::endl;
+    }
+} 
+void MDialog::ioXY(Dialog::Ioeqpp &iqp) {
+    Matrix mrx = iXY(iqp);
+    auto ans = Matrix(1, mrx.cols());
+    for (size_t i = 0, n = mrx.cols(); i < n; ++i) {
+        ans[0][i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[0][i] = ans[0][i] && (mrx[i][j] == 0);
+        }
+    }
+    oXY(ans, "a", iqp.out);
+
+    ans = {1, mrx.cols()};
+    for (size_t i = 0, n = ans.cols(); i < n; ++i) {
+        ans[0][i] = 0;
+        for (size_t j = 0; j < n; ++j) {
+            bool f = true;
+            for (size_t k = 0; k < n; ++k) {
+                f = f && (mrx[i][k] == mrx[j][k]);
+            }
+            if (f) ans[0][j] = i + 1;
+        }
+    }
+    oXY(ans, "b", iqp.out);
+
+    ans = {1, mrx.cols()};
+    for (size_t i = 0, n = ans.cols(); i < n; ++i) {
+        ans[0][i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[0][i] = ans[0][i] && (mrx[i][j] % 2 == 0);
+        }
+    }
+    oXY(ans, "c", iqp.out);
+
+    ans = {1, mrx.cols()};
+    for (size_t i = 0, n = ans.cols(); i < n; ++i) {
+        ans[0][i] = 1;
+        for (size_t j = 1; j < n; ++j) {
+            ans[0][i] = ans[0][i] && ((mrx[i][0] < mrx[i][n - 1] && mrx[i][j - 1] < mrx[i][j]) ||
+                                (mrx[i][0] > mrx[i][n - 1] && mrx[i][j - 1] > mrx[i][j]));
+        }
+    }
+    oXY(ans, "d", iqp.out);
+
+    ans = {1, mrx.cols()};
+    for (size_t i = 0, n = ans.cols(); i < n; ++i) {
+        ans[0][i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[0][i] = ans[0][i] && (mrx[i][j] == mrx[i][n - j - 1]);
+        }
+    }
+    oXY(ans, "e", iqp.out);
+}
+
+#else
 namespace {
     std::pair<int64_t *, size_t> iXY(Dialog::Ioeqpp &iqp) {
         size_t n = 0;
         int64_t *mrx = nullptr;
-        if (iqp.printQst) iqp.qout << "n" << std::endl;
 
         try {
+            if (iqp.printQst) iqp.qout << "n" << std::endl;
             if (MIO::inputULL(n, iqp.in, iqp.eout, iqp.printErr) != 0) throw MExc::ThereIsNothing();
             mrx = new int64_t[n * n];
             if (iqp.printQst) iqp.qout << "Matrix nxn:" << std::endl;
@@ -102,3 +202,4 @@ void MDialog::ioXY(Ioeqpp &iqp) {
     delete[] ans;
     delete[] mrx;
 }
+#endif
