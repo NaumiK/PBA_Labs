@@ -1,6 +1,8 @@
 #include "myfuncs.h"
+#include "version.h"
 
 int main() {
+    std::cout << "Currently you use the " << LABS_VERSION << " version of the Labs.\n" << "Git commit hash: " << GIT_COMMIT_HASH << "." << std::endl;
     MDialog dialog{};
     bool DS = true;
     while (DS) {

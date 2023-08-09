@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.23)
-project(Labs)
+project(Labs VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# version.h
+include(cmake/git-hash.cmake)
+
+message("GIT_COMMIT_HASH: ${GIT_COMMIT_HASH}")
 ##############################
 add_subdirectory(lib)
 message(STATUS "Collected libs: ${LIBLIST}")

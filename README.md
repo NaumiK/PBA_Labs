@@ -18,3 +18,5 @@ cd build/
 cmake -G "Visual Studio 17 2022" ..
 cmake --build . 
 ```
+# version.h
+При сборке создаётся файл version.h, в котором указывается нынешний 
