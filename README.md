@@ -31,7 +31,7 @@ cmake --build .
 В данном примере выбрана реализация "`USE_ONLY_MATRIX`", в консоли можно увидеть сообщение о выбранном варианте:
 ```
 -- Collected libs: MIO;MDialogs
--- Using Implementation of Lab3 is USE_ONLY_MATRIX
+-- Implementation of Lab3 is USE_ONLY_MATRIX
 -- Collected labs: LAB1;LAB2;LAB3;LAB4;LAB5;LAB6
 ```
 
