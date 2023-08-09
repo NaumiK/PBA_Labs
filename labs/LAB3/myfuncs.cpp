@@ -6,13 +6,98 @@
 #include <string>
 #include <vcruntime.h>
 #include "dialog.h"
+#include <vector>
 #include "Matrix.h"
 
 #if defined USE_VECTOR
 namespace {
+    Matrix iXY(Dialog::Ioeqpp &iqp) {
+        try {
+            if (iqp.printQst) iqp.qout << "n" << std::endl;
+            size_t n;
+            if (MIO::inputULL(n, iqp.in, iqp.eout, iqp.printErr) != 0) throw MExc::ThereIsNothing();
+            Matrix mrx{n, n};
+            if (iqp.printQst) iqp.qout << "Matrix nxn" << std::endl;
+            for (size_t i = 0; i < n; ++i) {
+                for (size_t j = 0; j < n; ++j) {
+                    if (MIO::inputStreamLL(mrx[i][j], iqp.in, iqp.eout, iqp.printErr) != 0)
+                        throw MExc::ThereIsNothing();
+                }
+            }
+            return mrx;
+        } catch (std::exception &err) {
+            iqp.eout << err.what() << std::endl;
+        }
+        return {0, 0};
+    }
+
+    void oXY(const std::vector<int64_t> &vr, const std::string &exc, std::ostream &out) {
+        out << exc << ") ";
+        for (size_t i = 1, endi = vr.size(); i <= endi; ++i) {
+            bool f = false;
+            for (size_t j = 0, endj = vr.size(); j < endj; ++j) {
+                if (vr[j] == i) {
+                    out << j + 1 << " ";
+                    f = true;
+                }
+            }
+            if (f) out << "\t";
+        }
+        out << std::endl;
+    }
 }
 void MDialog::ioXY(Dialog::Ioeqpp &iqp) {
-    
+    Matrix mrx = iXY(iqp);
+
+    auto ans = std::vector<int64_t>(mrx.cols());
+    for (size_t i = 0, n = ans.size(); i < n; ++i) {
+        ans[i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[i] = ans[i] && (mrx[i][j] == 0);
+        }
+    }
+    oXY(ans, "a", iqp.out);
+
+    ans = std::vector<int64_t>(mrx.cols());
+    for (size_t i = 0, n = ans.size(); i < n; ++i) {
+        ans[i] = 0;
+        for (size_t j = 0; j < n; ++j) {
+            bool f = true;
+            for (size_t k = 0; k < n; ++k) {
+                f = f && (mrx[i][k] == mrx[j][k]);
+            }
+            if (f) ans[j] = i + 1;
+        }
+    }
+    oXY(ans, "b", iqp.out);
+
+    ans = std::vector<int64_t>(mrx.cols());
+    for (size_t i = 0, n = ans.size(); i < n; ++i) {
+        ans[i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[i] = ans[i] && (mrx[i][j] % 2 == 0);
+        }
+    }
+    oXY(ans, "c", iqp.out);
+
+    ans = std::vector<int64_t>(mrx.cols());
+    for (size_t i = 0, n = ans.size(); i < n; ++i) {
+        ans[i] = 1;
+        for (size_t j = 1; j < n; ++j) {
+            ans[i] = ans[i] && ((mrx[i][0] < mrx[i][n - 1] && mrx[i][j - 1] < mrx[i][j]) ||
+                                (mrx[i][0] > mrx[i][n - 1] && mrx[i][j - 1] > mrx[i][j]));
+        }
+    }
+    oXY(ans, "d", iqp.out);
+
+    ans = std::vector<int64_t>(mrx.cols());
+    for (size_t i = 0, n = ans.size(); i < n; ++i) {
+        ans[i] = 1;
+        for (size_t j = 0; j < n; ++j) {
+            ans[i] = ans[i] && (mrx[i][j] == mrx[i][n - j - 1]);
+        }
+    }
+    oXY(ans, "e", iqp.out);
 }
 
 #elif defined USE_ONLY_MATRIX
