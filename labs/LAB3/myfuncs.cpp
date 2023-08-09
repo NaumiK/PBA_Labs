@@ -6,10 +6,10 @@
 #include <string>
 #include <vcruntime.h>
 #include "dialog.h"
-#include <vector>
-#include "Matrix.h"
 
 #if defined USE_VECTOR
+#include "Matrix.h"
+#include <vector>
 namespace {
     Matrix iXY(Dialog::Ioeqpp &iqp) {
         try {
@@ -101,6 +101,7 @@ void MDialog::ioXY(Dialog::Ioeqpp &iqp) {
 }
 
 #elif defined USE_ONLY_MATRIX
+#include "Matrix.h"
 namespace {
     Matrix iXY(Dialog::Ioeqpp &iqp) {
         try {
