@@ -66,7 +66,7 @@ struct Dialog {
         MIO::chooseVariant(option, options.size(), iqp.in, iqp.eout, iqp.printErr);
         return option - 1;
     }
-    
+
     virtual ~Dialog() = default;
 };
 
