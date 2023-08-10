@@ -10,8 +10,10 @@ else()
         OUTPUT_VARIABLE GIT_COMMIT_HASH
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
+    if ("${GIT_COMMIT_HASH}" STREQUAL "")
+        set(GIT_COMMIT_HASH "GitNotFound")
+    endif()
 endif()
-
 
 
 configure_file(

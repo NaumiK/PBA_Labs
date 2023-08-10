@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 # version.h
 include(cmake/git-hash.cmake)
+option(PRINT_VERSION_INFO TRUE)
 
 message("GIT_COMMIT_HASH: ${GIT_COMMIT_HASH}")
 ##############################
@@ -24,6 +25,9 @@ foreach(LAB ${LABLIST})
 
     # target_link_libraries(${LAB} ${LIBLIST})
     target_link_libraries(${LAB} MDialogs)
+    if(${PRINT_VERSION_INFO})
+        target_compile_definitions(${LAB} PRIVATE PRINT_VERSION_INFO)
+    endif()
 endforeach(LAB ${LABLIST})
 
 #######################

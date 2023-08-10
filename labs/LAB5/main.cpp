@@ -7,7 +7,9 @@
 
 
 int main(int argc, char **argv) {
+    #ifdef PRINT_VERSION_INFO
     std::cout << "Currently you use the " << LABS_VERSION << " version of the Labs.\n" << "Git commit hash: " << GIT_COMMIT_HASH << "." << std::endl;
+    #endif
     MDialog dialog{};
     try {
         if (argc < 3) throw MExc::ThereIsNothing();

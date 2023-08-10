@@ -4,7 +4,9 @@
 int t();
 
 int main() {
+    #ifdef PRINT_VERSION_INFO
     std::cout << "Currently you use the " << LABS_VERSION << " version of the Labs.\n" << "Git commit hash: " << GIT_COMMIT_HASH << "." << std::endl;
+    #endif
     MDialog dialog{};
     bool DS = true;
     while (DS) {
