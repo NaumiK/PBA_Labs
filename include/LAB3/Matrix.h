@@ -3,6 +3,20 @@
 
 #include <cstdint>
 
+// Попробуем через catch(...)
+template <typename T>
+T *safe_copy(const T *src, size_t srcsize) { 
+    T *dest = new T[srcsize];
+    try {
+        for (size_t i = 0; i != srcsize; ++i) 
+            dest[i] = src[i];
+    } catch (...) {
+        delete [] dest;
+        throw;
+    }
+    return dest;
+}
+
 class Matrix final {
     private:
         size_t rows_, cols_;
@@ -22,6 +36,7 @@ class Matrix final {
     public:
         size_t rows() const;
         size_t cols() const;
+        void swap(Matrix &rhs) noexcept;
 
         Matrix(size_t _rows, size_t _cols);
         ~Matrix();

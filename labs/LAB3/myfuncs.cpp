@@ -4,7 +4,6 @@
 #include "MIO.h"
 #include <stdint.h>
 #include <string>
-#include <vcruntime.h>
 #include "dialog.h"
 
 #if defined USE_VECTOR
