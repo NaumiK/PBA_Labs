@@ -19,6 +19,12 @@ size_t Matrix::cols() const {
     return cols_;
 }
 
+void Matrix::swap(Matrix &rhs) noexcept {
+    std::swap(rows_, rhs.rows_);
+    std::swap(cols_, rhs.cols_);
+    std::swap(data_, rhs.data_);
+}
+
 Matrix::Matrix(size_t _rows, size_t _cols) : rows_(_rows), cols_(_cols) {
     data_ = new int64_t[rows_ * cols_];
 }
@@ -31,24 +37,17 @@ Matrix::ProxyRow Matrix::operator[](size_t row) {
     return ProxyRow(data_ + row * cols_, cols_);
 }
 
-
 const Matrix::ProxyRow Matrix::operator[](size_t row) const {
     return ProxyRow(data_ + row * cols_, cols_);
 }
 
 Matrix::Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_) {
-    data_ = new int64_t[rows_ * cols_];
-    std::copy(other.data_, other.data_ + (rows_ * cols_), data_);
+    data_ = safe_copy(other.data_, other.rows_ * other.cols_);
 }
 
 Matrix& Matrix::operator=(const Matrix& other) {
-    if (this != &other) {
-        delete[] data_;
-        rows_ = other.rows_;
-        cols_ = other.cols_;
-        data_ = new int64_t[rows_ * cols_];
-        std::copy(other.data_, other.data_ + (rows_ * cols_), data_);
-    }
+    Matrix tmp(other);
+    swap(tmp);
     return *this;
 }
 
