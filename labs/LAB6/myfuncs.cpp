@@ -8,9 +8,9 @@ namespace {
         getline(iqp.in, str, '$');
         iqp.in.ignore();
         std::vector<Dialog::FuncWithDesc<uint64_t(MLL *, std::string &)>> options = {
-                {"same full name", [](MLL *mll, std::string &str) { return mll->cnt(str, 0); }},
-                {"same job",       [](MLL *mll, std::string &str) { return mll->cnt(str, 1); }},
-                {"same place",     [](MLL *mll, std::string &str) { return mll->cnt(str, 2); }},
+                {"same full name", [](MLL *mll, std::string &str) { return MLL_cnt_coincidences(*mll, str, 0); }},
+                {"same job",       [](MLL *mll, std::string &str) { return MLL_cnt_coincidences(*mll, str, 1); }},
+                {"same place",     [](MLL *mll, std::string &str) { return MLL_cnt_coincidences(*mll, str, 2); }},
         };
         iqp.out << options[Dialog::optionD<uint64_t(MLL *, std::string &)>(options, iqp)].func(mll, str) << std::endl;
     }
@@ -20,12 +20,12 @@ void MDialog::ioXY(Ioeqpp &iqp) {
     auto *mll = new MLL;
     std::vector<Dialog::FuncWithDesc<bool(MLL *, Dialog::Ioeqpp &)>> options = {
             {"print elements",     [](MLL *mll, Dialog::Ioeqpp &iqp) {
-                mll->print(iqp.out);
+                MLL_print(*mll, iqp.out);
                 iqp.qout << std::endl;
                 return true;
             }},
             {"print table",        [](MLL *mll, Dialog::Ioeqpp &iqp) {
-                mll->printT(iqp.out);
+                MLL_printT(*mll, iqp.out);
                 return true;
             }},
             {"count coincidences", [](MLL *mll, Dialog::Ioeqpp &iqp) {
