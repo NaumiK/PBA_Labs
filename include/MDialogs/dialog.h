@@ -1,13 +1,13 @@
 #ifndef LABS_DIALOG_H
 #define LABS_DIALOG_H
 
-#include <iostream>
 #include <fstream>
 #include <functional>
-#include "MIO.h"
-#include "MExc.h"
+#include <iostream>
 #include <string>
 
+#include "MExc.h"
+#include "MIO.h"
 
 struct Dialog {
     struct Ioeqpp {
@@ -24,38 +24,47 @@ struct Dialog {
 
     int step();
 
-    template<typename T=std::ifstream>
+    template <typename T = std::ifstream>
     static T fileD(Ioeqpp &iqp) {
         bool f = true;
         T fio;
-        std::string name = ((typeid(T) == typeid(std::ifstream)) ? "in.txt" : "out.txt");
-        if (typeid(T) != typeid(std::ifstream) && typeid(T) != typeid(std::ofstream)) throw MExc::NotThatType();
+        std::string name =
+            ((typeid(T) == typeid(std::ifstream)) ? "in.txt" : "out.txt");
+        if (typeid(T) != typeid(std::ifstream) &&
+            typeid(T) != typeid(std::ofstream))
+            throw MExc::NotThatType();
         if (iqp.printQst)
-            iqp.qout << "Write name of file " << "(" << name << " as default" << ")" << ":" << std::endl;
+            iqp.qout << "Write name of file "
+                     << "(" << name << " as default"
+                     << ")"
+                     << ":" << std::endl;
         do {
             try {
                 std::getline(iqp.in, name);
                 if (name.empty())
-                    name = ((typeid(T) == typeid(std::ifstream)) ? "in.txt" : "out.txt");
+                    name = ((typeid(T) == typeid(std::ifstream)) ? "in.txt"
+                                                                 : "out.txt");
                 fio.open(name);
                 if (fio.fail()) throw MExc::ThereIsNothing();
                 f = false;
             } catch (std::exception &err) {
-                if (iqp.printErr) iqp.eout << err.what() << "\n" << "Write name of file, please" << std::endl;
-
+                if (iqp.printErr)
+                    iqp.eout << err.what() << "\n"
+                             << "Write name of file, please" << std::endl;
             }
         } while (f);
         return fio;
     }
 
-    template<class T>
+    template <class T>
     struct FuncWithDesc {
         std::string desc;
         std::function<T> func;
     };
 
-    template<class T>
-    static uint64_t optionD(std::vector<FuncWithDesc<T>> &options, Ioeqpp &iqp) {
+    template <class T>
+    static uint64_t optionD(std::vector<FuncWithDesc<T>> &options,
+                            Ioeqpp &iqp) {
         if (iqp.printQst) {
             iqp.qout << "Choose an option:\n";
             for (int i = 0; i < options.size(); ++i) {
@@ -63,11 +72,12 @@ struct Dialog {
             }
         }
         uint64_t option;
-        MIO::chooseVariant(option, options.size(), iqp.in, iqp.eout, iqp.printErr);
+        MIO::chooseVariant(option, options.size(), iqp.in, iqp.eout,
+                           iqp.printErr);
         return option - 1;
     }
 
     virtual ~Dialog() = default;
 };
 
-#endif //LABS_DIALOG_H
+#endif  // LABS_DIALOG_H

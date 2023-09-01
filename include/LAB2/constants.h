@@ -5,4 +5,4 @@
 
 constexpr size_t arrsize = 100500;
 
-#endif//LAB2_CONSTANTS_H
+#endif // LAB2_CONSTANTS_H
